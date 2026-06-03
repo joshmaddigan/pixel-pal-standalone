@@ -15,16 +15,17 @@ clock = pygame.time.Clock()
 WHITE = (255, 255, 255)
 
 class Player:
-    def __init__(self, x, y, hp, color, size):
+    def __init__(self, x, y, hp, image, size):
         self.x = x
         self.y = y
         self.hp = hp
-        self.color = color
+        self.image = pygame.image.load("assets/pal_neutral.png")
+        self.image = pygame.transform.scale(self.image, (100, 100))
         self.size = size
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.image, (self.x, self.y))
 
     def movement(self):
         keys = pygame.key.get_pressed()
@@ -40,8 +41,8 @@ class Player:
         self.rect.x = self.x
         self.rect.y = self.y
 
-draw_player = Player(400, 300, 100, (255, 0, 0), player_size)
-draw_enemy = Player(200, 150, 100, (0, 0, 255), player_size)
+draw_player = Player(400, 300, 100, "assets/pal_neutral.png", player_size)
+draw_enemy = Player(200, 150, 100, "assets/enemy.png", player_size)
 
 running = True
 while running:
