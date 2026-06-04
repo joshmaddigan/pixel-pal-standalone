@@ -6,8 +6,6 @@ screen_width = 800
 screen_height = 600
 player_size = 50
 
-enemy = pygame.Rect(200, 150, player_size, player_size)
-
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Pixel Pal")
 clock = pygame.time.Clock()
@@ -41,8 +39,21 @@ class Player:
         self.rect.x = self.x
         self.rect.y = self.y
 
+class Food:
+    def __init__(self, x, y, image, size, hp_up):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load(image)
+        self.image = pygame.transform.scale(self.image, (size, size))
+        self.size = size
+        self.hp_up = hp_up
+        self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.x, self.y))
+
 draw_player = Player(400, 300, 100, "assets/pal_neutral.png", player_size)
-draw_enemy = Player(200, 150, 100, "assets/enemy.png", player_size)
+draw_food = Food(200, 150, "assets/pal_neutral.png", 50, 10)
 
 running = True
 while running:
@@ -55,10 +66,10 @@ while running:
 
     draw_player.movement()
     draw_player.draw(screen)
-    draw_enemy.draw(screen)
+    draw_food.draw(screen)
     pygame.display.flip()
 
-    if draw_player.rect.colliderect(draw_enemy):
+    if draw_player.rect.colliderect(draw_food):
         print("Collision detected!")
         running = False
 
