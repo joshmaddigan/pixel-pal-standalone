@@ -15,6 +15,10 @@ pygame.time.set_timer(tick_event, 3000) # 3 seconds
 font = pygame.font.SysFont("Arial", 24)
 
 WHITE = (255, 255, 255)
+PP_NAVY = (26, 26, 46)
+BLACK = (0, 0, 0)
+WARM_GOLD = (255, 200, 50)
+wall_color = WARM_GOLD
 
 class PixelPal:
     def __init__(self, name, hunger, happiness, energy, max_value):
@@ -96,13 +100,32 @@ class Food:
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
+
+def draw_home_room():
+    left_wall_top = pygame.draw.rect(screen, (WARM_GOLD), (0, 0, 10, 265), width=10)
+    left_wall_bottom = pygame.draw.rect(screen, (WARM_GOLD), (0, 335, 10, 265), width=10)
+    left_door = pygame.draw.rect(screen, (255, 255, 255), (0, 265, 10, 70), width=10)
+    right_door = pygame.draw.rect(screen, (255, 255, 255), (790, 265, 10, 70), width=10)
+    right_wall_top = pygame.draw.rect(screen, (WARM_GOLD), (790, 0, 10, 265), width=10)
+    right_wall_bottom = pygame.draw.rect(screen, (WARM_GOLD), (790, 335, 10, 265), width=10)
+    top_wall = pygame.draw.rect(screen, (WARM_GOLD), (0, 0, 800, 10), width=10)
+    bottom_wall = pygame.draw.rect(screen, (WARM_GOLD), (0, 590, 800, 10), width=10)
+    return left_door, right_door
+
+def draw_kitchen_room():
+    pass
+
+def draw_living_room():
+    pass
+
+
 draw_player = Player(400, 300, 100, "assets/pal_neutral.png", player_size)
 
 draw_food = Food(150, 250,"assets/asset_meat_x8.png", 50, 10)
 pal = PixelPal("Pixel", 100, 100, 100, 100)
 
 
-
+current_room = "home"
 running = True
 while running:
     for event in pygame.event.get():
@@ -117,7 +140,8 @@ while running:
     if pal.is_dead():
         running = False
 
-    screen.fill(WHITE)
+    screen.fill(PP_NAVY)
+    
     clock.tick(60)
     text = font.render(f"Hunger: {pal.hunger}  Happiness: {pal.happiness}  Energy: {pal.energy}", True, (0, 0, 0))
 
@@ -125,11 +149,27 @@ while running:
     draw_player.movement()
     draw_player.draw(screen)
     draw_food.draw(screen)
-    pygame.display.flip()
+    
+    if current_room == "home":
+        left_door, right_door = draw_home_room()
+        draw_food.draw(screen)
+        screen.fill(PP_NAVY)
+    elif current_room == "kitchen":
+        pass #draw_kitchen_room()
+    elif current_room == "living room":
+        pass #draw_living_room()
+
+    left_door, right_door = draw_home_room()
+    if left_door.colliderect(draw_player.rect):
+        current_room = "kitchen"
+        print("Entered kitchen")
+    if right_door.colliderect(draw_player.rect):
+        current_room = "living room"
+        print("Entered living room")
 
     if draw_player.rect.colliderect(draw_food):
         pal.feed(draw_food.hunger_up)
         print("Collision detected!")
         draw_food = Food(random.randint(0, screen_width - 50), random.randint(0, screen_height - 50), "assets/asset_meat_x8.png", 50, 10)
-
+    pygame.display.flip()
 pygame.quit()
