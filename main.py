@@ -1,7 +1,6 @@
 import pygame
 import random
 
-
 pygame.init()
 
 screen_width = 800
@@ -13,6 +12,7 @@ pygame.display.set_caption("Pixel Pal")
 clock = pygame.time.Clock()
 tick_event = pygame.USEREVENT
 pygame.time.set_timer(tick_event, 3000) # 3 seconds
+font = pygame.font.SysFont("Arial", 24)
 
 WHITE = (255, 255, 255)
 
@@ -98,8 +98,10 @@ class Food:
 
 draw_player = Player(400, 300, 100, "assets/pal_neutral.png", player_size)
 
-draw_food = Food(150, 250,"assets/pal_neutral.png", 50, 10)
+draw_food = Food(150, 250,"assets/asset_meat_x8.png", 50, 10)
 pal = PixelPal("Pixel", 100, 100, 100, 100)
+
+
 
 running = True
 while running:
@@ -117,7 +119,9 @@ while running:
 
     screen.fill(WHITE)
     clock.tick(60)
+    text = font.render(f"Hunger: {pal.hunger}  Happiness: {pal.happiness}  Energy: {pal.energy}", True, (0, 0, 0))
 
+    screen.blit(text, (10, 10))
     draw_player.movement()
     draw_player.draw(screen)
     draw_food.draw(screen)
@@ -126,6 +130,6 @@ while running:
     if draw_player.rect.colliderect(draw_food):
         pal.feed(draw_food.hunger_up)
         print("Collision detected!")
-        draw_food = Food(random.randint(0, screen_width - 50), random.randint(0, screen_height - 50), "assets/pal_neutral.png", 50, 10)
+        draw_food = Food(random.randint(0, screen_width - 50), random.randint(0, screen_height - 50), "assets/asset_meat_x8.png", 50, 10)
 
 pygame.quit()
