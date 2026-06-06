@@ -50,13 +50,13 @@ class PixelPal:
 ## NEED TO GENERATE SPRITE BASED ON STATS ##       
     def get_sprite(self):
         if self.hunger < self.max_value * 0.5 and self.happiness < self.max_value * 0.5 and self.energy < self.max_value * 0.5:
-            return "pal_neutral.png"
+            return "pal_happy_x8.png"
         elif self.hunger < self.max_value * 0.5:
-            return "pal_neutral.png"
+            return "pal_hungry_x8.png"
         elif self.happiness < self.max_value * 0.5:
-            return "pal_neutral.png"
+            return "pal_sad_x8.png"
         elif self.energy < self.max_value * 0.5:
-            return "pal_neutral.png"
+            return "pal_tired_x8.png"
         elif self.hunger > self.max_value * 0.7 and self.happiness > self.max_value * 0.7 and self.energy > self.max_value * 0.7:
             return "pal_neutral.png"
         else: 
