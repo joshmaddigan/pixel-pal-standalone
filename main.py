@@ -15,7 +15,9 @@ pygame.time.set_timer(tick_event, 3000) # 3 seconds
 font = pygame.font.SysFont("Arial", 24)
 
 WHITE = (255, 255, 255)
-PP_NAVY = (26, 26, 46)
+PP_NAVY_BG = (26, 26, 46) #home background color
+KITCHEN_BG = (180, 60, 30)
+LIVING_BG = (30, 80, 60)
 BLACK = (0, 0, 0)
 WARM_GOLD = (255, 200, 50)
 wall_color = WARM_GOLD
@@ -112,12 +114,23 @@ def draw_home_room():
     bottom_wall = pygame.draw.rect(screen, (WARM_GOLD), (0, 590, 800, 10), width=10)
     return left_door, right_door
 
-def draw_kitchen_room():
-    pass
-
 def draw_living_room():
-    pass
+    top_wall = pygame.draw.rect(screen, (WARM_GOLD), (0, 0, 800, 10), width=10)
+    bottom_wall = pygame.draw.rect(screen, (WARM_GOLD), (0, 590, 800, 10), width=10)
+    right_wall = pygame.draw.rect(screen, (WARM_GOLD), (790, 0, 10, 600), width=10)
+    left_wall_top = pygame.draw.rect(screen, (WARM_GOLD), (0, 0, 10, 265), width=10)
+    left_wall_bottom = pygame.draw.rect(screen, (WARM_GOLD), (0, 335, 10, 265), width=10)
+    left_door = pygame.draw.rect(screen, (255, 255, 255), (0, 265, 10, 70), width=10)
+    return left_door
 
+def draw_kitchen_room():
+    top_wall = pygame.draw.rect(screen, (WARM_GOLD), (0, 0, 800, 10), width=10)
+    bottom_wall = pygame.draw.rect(screen, (WARM_GOLD), (0, 590, 800, 10), width=10)
+    right_wall_top = pygame.draw.rect(screen, (WARM_GOLD), (790, 0, 10, 265), width=10)
+    right_wall_bottom = pygame.draw.rect(screen, (WARM_GOLD), (790, 335, 10, 265), width=10)
+    right_door = pygame.draw.rect(screen, (255, 255, 255), (790, 265, 10, 70), width=10)
+    left_wall = pygame.draw.rect(screen, (WARM_GOLD), (0, 0, 10, 600), width=10)
+    return right_door
 
 draw_player = Player(400, 300, 100, "assets/pal_neutral.png", player_size)
 
@@ -140,36 +153,66 @@ while running:
     if pal.is_dead():
         running = False
 
-    screen.fill(PP_NAVY)
-    
     clock.tick(60)
-    text = font.render(f"Hunger: {pal.hunger}  Happiness: {pal.happiness}  Energy: {pal.energy}", True, (0, 0, 0))
 
-    screen.blit(text, (10, 10))
-    draw_player.movement()
-    draw_player.draw(screen)
-    draw_food.draw(screen)
+
     
     if current_room == "home":
+        screen.fill(PP_NAVY_BG)
         left_door, right_door = draw_home_room()
         draw_food.draw(screen)
-        screen.fill(PP_NAVY)
+        if left_door.colliderect(draw_player.rect):
+            current_room = "kitchen"
+            draw_player.x = 20
+            draw_player.y = 300
+            draw_player.rect.x = draw_player.x
+            draw_player.rect.y = draw_player.y
+            print("Entered kitchen")
+        if right_door.colliderect(draw_player.rect):
+            current_room = "living room"
+            draw_player.x = 20
+            draw_player.y = 300
+            draw_player.rect.x = draw_player.x
+            draw_player.rect.y = draw_player.y
+            print("Entered living room")
+        
     elif current_room == "kitchen":
-        pass #draw_kitchen_room()
+        screen.fill(KITCHEN_BG)
+        right_door = draw_kitchen_room()
+        draw_food.draw(screen)
+        if right_door.colliderect(draw_player.rect):
+            current_room = "home"
+            draw_player.x = 20
+            draw_player.y = 300
+            draw_player.rect.x = draw_player.x
+            draw_player.rect.y = draw_player.y
+            print("Entered home")
+        
     elif current_room == "living room":
-        pass #draw_living_room()
-
-    left_door, right_door = draw_home_room()
-    if left_door.colliderect(draw_player.rect):
-        current_room = "kitchen"
-        print("Entered kitchen")
-    if right_door.colliderect(draw_player.rect):
-        current_room = "living room"
-        print("Entered living room")
+        screen.fill(LIVING_BG)
+        left_door_door = draw_living_room()
+        draw_food.draw(screen)
+        if left_door_door.colliderect(draw_player.rect):
+            current_room = "home"
+            draw_player.x = 700
+            draw_player.y = 300
+            draw_player.rect.x = draw_player.x
+            draw_player.rect.y = draw_player.y
+            print("Entered home")
 
     if draw_player.rect.colliderect(draw_food):
         pal.feed(draw_food.hunger_up)
         print("Collision detected!")
         draw_food = Food(random.randint(0, screen_width - 50), random.randint(0, screen_height - 50), "assets/asset_meat_x8.png", 50, 10)
+    
+    draw_player.movement()
+    draw_player.draw(screen)
+    draw_food.draw(screen)
+    text = font.render(f"Hunger: {pal.hunger}  Happiness: {pal.happiness}  Energy: {pal.energy}", True, (0, 0, 0))
+    screen.blit(text, (10, 10))
+
+    
+    
     pygame.display.flip()
+    
 pygame.quit()
